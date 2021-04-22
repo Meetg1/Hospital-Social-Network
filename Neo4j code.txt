@@ -1,0 +1,69 @@
+==============================================CREATING DATABASE===============================
+
+//Create a Patient node
+CREATE (n:Patient {patientName:'name'}) RETURN n
+
+//Create a Doctor node
+CREATE (n:Doctor {doctorName:'name'}) RETURN n
+
+//Create a MedicalReport node
+CREATE (n:MedicalReport {reportName:'Dengue-Test'}) RETURN n
+
+//Create a Nurse node
+CREATE (n:Nurse {nurseName:'name'}) RETURN n
+
+//Create a Technician node
+CREATE (n:Technician {reportName:'name'}) RETURN n
+
+// Create like relationship between Patient and Doctor
+MATCH (a:Patient), (m:Doctor)
+WHERE a.patientName = 'Ramesh' AND m.doctorName = 'Nitin'
+CREATE (a)-[:likes]->(m)
+RETURN a, m
+
+// Create contributeD relationship between medical report and Doctor
+MATCH (a:Doctor), (m:MedicalReport)
+WHERE a.doctorName = 'Nitin' AND m.reportName = 'Blood-Test'
+CREATE (a)-[:contributeD]->(m)
+RETURN a, m
+
+
+// Create belongs relationship between medical report and Patient
+MATCH (a:MedicalReport), (m:Patient)
+WHERE a.reportName = 'X-Ray' AND m.patientName = 'Bhavesh'
+CREATE (a)-[:belongs]->(m)
+RETURN a, m
+
+// Create contribute_N relationship between medical report and Nurse
+MATCH (a:Nurse), (m:MedicalReport)
+WHERE a.nurseName = 'Deepika' AND m.reportName = 'Blood-Test'
+CREATE (a)-[:contribute_N]->(m)
+RETURN a, m
+
+// Create contribute_T relationship between medical report and Technician
+MATCH (a:Technician), (m:MedicalReport)
+WHERE a.technicianName = 'Mahesh' AND m.reportName = 'MRI'
+CREATE (a)-[:contribute_T]->(m)
+RETURN a, m
+
+==============================================QUERIES===============================
+MATCH (r:MedicalReport) RETURN r.reportName 
+//returns all medical records
+
+MATCH (p:Patient)-[:belongs]-(r:MedicalReport) WHERE p.patientName = 'Bhavesh'
+RETURN r.reportName
+//returns all medical records of a specific patient
+
+MATCH (p:Patient)-[:belongs]-(r:MedicalReport)-[:contributeD]-(d:Doctor)       
+WHERE p.patientName = 'Shreyas'
+RETURN p,r,d
+//retrieves the name of doctors who has treated a particular patient.
+
+MATCH (p:Patient)-[l:likes]-(d:Doctor)
+WHERE d.doctorName = 'Nitin'
+RETURN p,l,d
+//retrieve patients who liked a particular doctor
+
+MATCH (p:Patient {patientName: 'Shreyas'})--(r:MedicalReport)--(n)
+return p,r,n
+//retrieves all the staff including doctors,nurses,technicians who worked on the report of a particular patient
