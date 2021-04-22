@@ -19,6 +19,6 @@ RDBMS IA-2 Research Paper Implementation
 2) Create a free sandbox 
 3) Enter the commands given in Neo4jcode.txt file in the neo4j terminal
 4) Enter the following command to view the whole database:
-'''
+```
 MATCH (n) RETURN n
-'''
+```
